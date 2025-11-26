@@ -60,3 +60,60 @@ COMMENT ON COLUMN pdfs.short_code IS 'Unique short code used in shareable URLs (
 COMMENT ON COLUMN pdfs.r2_key IS 'Cloudflare R2 storage key for the PDF file';
 COMMENT ON COLUMN pdfs.expires_at IS 'When the PDF link expires (24 hours for free tier)';
 COMMENT ON COLUMN waitlist.source IS 'Where the user signed up from (landing, viewer, etc)';
+
+-- ============================================================================
+-- Row Level Security (RLS) Policies
+-- ============================================================================
+
+-- Enable RLS on both tables
+ALTER TABLE pdfs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE waitlist ENABLE ROW LEVEL SECURITY;
+
+-- PDFs table policies
+-- Allow anyone to insert PDFs (uploads happen via API with validation)
+CREATE POLICY "Anyone can insert PDFs"
+  ON pdfs
+  FOR INSERT
+  WITH CHECK (true);
+
+-- Allow public read access to non-expired PDFs (for viewing)
+CREATE POLICY "Public can read non-expired PDFs"
+  ON pdfs
+  FOR SELECT
+  USING (expires_at > NOW());
+
+-- Allow public to increment view count (for tracking views)
+CREATE POLICY "Public can update view count"
+  ON pdfs
+  FOR UPDATE
+  USING (expires_at > NOW())
+  WITH CHECK (expires_at > NOW());
+
+-- Allow deletion of any PDF (for cleanup/admin tasks)
+CREATE POLICY "Anyone can delete PDFs"
+  ON pdfs
+  FOR DELETE
+  USING (true);
+
+-- Waitlist table policies
+-- Allow public to insert emails (join waitlist)
+CREATE POLICY "Public can join waitlist"
+  ON waitlist
+  FOR INSERT
+  WITH CHECK (true);
+
+-- Prevent public from reading waitlist (privacy protection)
+-- Note: Service role can still read for admin purposes
+CREATE POLICY "Restrict public read on waitlist"
+  ON waitlist
+  FOR SELECT
+  USING (false);
+
+-- ============================================================================
+-- Security Notes
+-- ============================================================================
+--
+-- 1. The service_role key used in the app bypasses RLS
+-- 2. All database operations happen server-side via API routes
+-- 3. These policies provide defense in depth if anon key is ever used
+-- 4. For production, consider additional policies based on user auth

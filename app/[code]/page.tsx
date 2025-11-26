@@ -4,14 +4,15 @@ import { PDFViewer } from '@/components/pdf-viewer';
 import { CONSTANTS } from '@/lib/constants';
 
 interface PageProps {
-  params: { code: string };
+  params: Promise<{ code: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps) {
+  const { code } = await params;
   const { data: pdf } = await supabase
     .from('pdfs')
     .select('original_filename')
-    .eq('short_code', params.code)
+    .eq('short_code', code)
     .single();
 
   if (!pdf) {
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function ViewerPage({ params }: PageProps) {
-  const { code } = params;
+  const { code } = await params;
 
   // Fetch PDF metadata
   const { data: pdf, error } = await supabase

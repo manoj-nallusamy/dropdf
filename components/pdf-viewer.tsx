@@ -1,10 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import * as pdfjs from 'pdfjs-dist';
-
-// Set worker path
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 interface PDFViewerProps {
   url: string;
@@ -25,6 +21,12 @@ export function PDFViewer({ url, filename }: PDFViewerProps) {
       try {
         setLoading(true);
         setError(null);
+
+        // Dynamically import pdfjs only on client-side
+        const pdfjs = await import('pdfjs-dist');
+
+        // Set worker path
+        pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
         const pdf = await pdfjs.getDocument(url).promise;
         setNumPages(pdf.numPages);
