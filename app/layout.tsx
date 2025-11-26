@@ -6,19 +6,49 @@ import { CONSTANTS } from '@/lib/constants';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: `${CONSTANTS.APP_NAME} - Share PDFs Instantly`,
-  description: CONSTANTS.APP_DESCRIPTION,
+  title: {
+    default: `${CONSTANTS.APP_NAME} - Share PDF Files Instantly | Free PDF Sharing`,
+    template: `%s | ${CONSTANTS.APP_NAME}`,
+  },
+  description: 'Share PDF documents instantly with DropDF. Upload PDFs, get shareable links in seconds. No signup required. Free PDF sharing service with built-in viewer.',
+  keywords: [
+    'PDF sharing',
+    'share PDF online',
+    'PDF file sharing',
+    'upload PDF',
+    'free PDF hosting',
+    'PDF viewer',
+    'document sharing',
+    'file sharing',
+    'instant PDF links',
+    'PDF upload',
+  ],
+  authors: [{ name: 'DropDF' }],
+  creator: 'DropDF',
+  publisher: 'DropDF',
   openGraph: {
-    title: `${CONSTANTS.APP_NAME} - Share PDFs Instantly`,
-    description: CONSTANTS.APP_DESCRIPTION,
+    title: `${CONSTANTS.APP_NAME} - Share PDF Files Instantly`,
+    description: 'Upload PDFs and get shareable links in seconds. No signup required. Free, fast, and simple PDF sharing service.',
     url: CONSTANTS.APP_URL,
     siteName: CONSTANTS.APP_NAME,
     type: 'website',
+    locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${CONSTANTS.APP_NAME} - Share PDFs Instantly`,
-    description: CONSTANTS.APP_DESCRIPTION,
+    title: `${CONSTANTS.APP_NAME} - Share PDF Files Instantly`,
+    description: 'Free PDF sharing service. Upload PDFs, get instant shareable links. No signup required.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 
