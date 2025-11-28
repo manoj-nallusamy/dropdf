@@ -5,7 +5,7 @@ export const CONSTANTS = {
 
   // Link settings
   SHORT_CODE_LENGTH: 8,
-  DEFAULT_EXPIRY_HOURS: 24,
+  DEFAULT_EXPIRY_HOURS: 24 * 7, // 7 days = 168 hours
 
   // UI
   APP_NAME: 'DropDF',

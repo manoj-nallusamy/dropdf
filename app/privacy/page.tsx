@@ -12,8 +12,10 @@ export default function PrivacyPage() {
       {/* Header */}
       <header className="py-6 px-4 border-b border-gray-100">
         <div className="max-w-4xl mx-auto">
-          <Link href="/" className="text-xl font-bold text-gray-900 hover:text-blue-500 transition-colors">
-            Drop<span className="text-blue-500">DF</span>
+          <Link href="/" className="text-xl font-bold group">
+            <span className="text-blue-600">D<span className="lowercase">ro</span></span>
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">P</span>
+            <span className="text-purple-600">DF</span>
           </Link>
         </div>
       </header>
@@ -21,7 +23,7 @@ export default function PrivacyPage() {
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
-        <p className="text-gray-500 mb-8">Last updated: November 27, 2024</p>
+        <p className="text-gray-500 mb-8">Last updated: November 27, 2025</p>
 
         <div className="prose prose-gray max-w-none">
           <section className="mb-8">
@@ -38,7 +40,7 @@ export default function PrivacyPage() {
             <h3 className="text-xl font-semibold text-gray-800 mb-3 mt-6">PDF Files</h3>
             <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-4">
               <li>When you upload a PDF, we temporarily store it on our secure servers</li>
-              <li>Files are automatically deleted after 24 hours</li>
+              <li>Free tier files are automatically deleted after 7 days</li>
               <li>We do not scan, read, or analyze the content of your PDFs</li>
               <li>File names and sizes are stored for operational purposes</li>
             </ul>
@@ -78,7 +80,7 @@ export default function PrivacyPage() {
               <li>Encrypted connections (HTTPS/SSL)</li>
               <li>Secure cloud storage with Cloudflare R2</li>
               <li>Database security with Supabase</li>
-              <li>Automatic file deletion after 24 hours</li>
+              <li>Automatic file deletion after 7 days for free tier</li>
               <li>No permanent storage of file contents</li>
             </ul>
           </section>
@@ -102,7 +104,7 @@ export default function PrivacyPage() {
               <li>Know what data we collect about you</li>
               <li>Request deletion of your waitlist email</li>
               <li>Opt out of communications at any time</li>
-              <li>Know that your uploaded files are automatically deleted after 24 hours</li>
+              <li>Know that your uploaded files are automatically deleted after 7 days (free tier)</li>
             </ul>
           </section>
 
@@ -120,7 +122,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Children's Privacy</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Children&apos;s Privacy</h2>
             <p className="text-gray-600">
               DropDF is not intended for children under 13 years of age. We do not knowingly collect
               personal information from children under 13.
@@ -131,7 +133,7 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Changes to This Policy</h2>
             <p className="text-gray-600">
               We may update this privacy policy from time to time. We will notify users of significant
-              changes by updating the "Last updated" date at the top of this page.
+              changes by updating the &quot;Last updated&quot; date at the top of this page.
             </p>
           </section>
 

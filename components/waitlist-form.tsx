@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 export function WaitlistForm() {
   const [email, setEmail] = useState('');
+  const [preferredTier, setPreferredTier] = useState<'pro' | 'business'>('pro');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
@@ -18,7 +19,7 @@ export function WaitlistForm() {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, preferredTier }),
       });
 
       const data = await res.json();
@@ -48,19 +49,27 @@ export function WaitlistForm() {
           <p className="text-green-800 font-medium">{message}</p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex gap-3">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
             required
-            className="flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-gray-700"
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-gray-700"
           />
+          <select
+            value={preferredTier}
+            onChange={(e) => setPreferredTier(e.target.value as 'pro' | 'business')}
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-gray-700 bg-white"
+          >
+            <option value="pro">Pro ($5/mo)</option>
+            <option value="business">Business ($19/mo)</option>
+          </select>
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full px-6 py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {status === 'loading' ? 'Joining...' : 'Join Waitlist'}
           </button>

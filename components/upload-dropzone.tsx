@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { Turnstile } from '@marsidev/react-turnstile';
 import { LinkDisplay } from './link-display';
 import { CONSTANTS } from '@/lib/constants';
 import { formatFileSize } from '@/lib/utils';
@@ -17,16 +18,23 @@ export function UploadDropzone() {
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<UploadResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
+
+    if (!turnstileToken) {
+      setError('Please complete the CAPTCHA verification');
+      return;
+    }
 
     setUploading(true);
     setError(null);
 
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('turnstileToken', turnstileToken);
 
     try {
       const res = await fetch('/api/upload', {
@@ -41,12 +49,14 @@ export function UploadDropzone() {
       }
 
       setResult(data);
+      // Reset CAPTCHA after successful upload
+      setTurnstileToken(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
       setUploading(false);
     }
-  }, []);
+  }, [turnstileToken]);
 
   const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
     onDrop,
@@ -58,6 +68,7 @@ export function UploadDropzone() {
   const reset = () => {
     setResult(null);
     setError(null);
+    setTurnstileToken(null);
   };
 
   // Show success state
@@ -65,8 +76,15 @@ export function UploadDropzone() {
     return <LinkDisplay result={result} onReset={reset} />;
   }
 
-  // File rejection errors
+  // File rejection errors - make them human-friendly
   const rejectionError = fileRejections[0]?.errors[0]?.message;
+  const friendlyRejectionError = rejectionError
+    ? rejectionError.includes('larger than')
+      ? 'File is too large. Maximum file size is 5MB.'
+      : rejectionError.includes('type') || rejectionError.includes('accept')
+      ? 'Only PDF files are allowed.'
+      : rejectionError
+    : null;
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -136,15 +154,31 @@ export function UploadDropzone() {
                 Maximum file size: <span className="font-semibold text-gray-700">{formatFileSize(CONSTANTS.MAX_FILE_SIZE)}</span>
               </p>
               <p className="text-sm text-gray-500 mt-2">
-                📄 PDF files only • 🕐 24-hour storage • 🔒 Secure upload
+                📄 PDF files only • 🕐 7-day storage • 🔒 Secure upload
               </p>
             </div>
           </div>
         )}
       </div>
 
+      {/* CAPTCHA Widget */}
+      <div className="mt-6 flex justify-center overflow-x-auto">
+        <Turnstile
+          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+          onSuccess={setTurnstileToken}
+          onError={(err) => {
+            console.error('Turnstile error:', err);
+            setError('CAPTCHA verification failed. Please try again.');
+          }}
+          onExpire={() => setTurnstileToken(null)}
+          options={{
+            size: 'flexible',
+          }}
+        />
+      </div>
+
       {/* Error messages */}
-      {(error || rejectionError) && (
+      {(error || friendlyRejectionError) && (
         <div className="mt-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-2xl shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex-shrink-0">
@@ -153,7 +187,7 @@ export function UploadDropzone() {
               </svg>
             </div>
             <p className="text-red-700 font-medium">
-              {error || rejectionError}
+              {error || friendlyRejectionError}
             </p>
           </div>
         </div>

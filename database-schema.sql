@@ -29,14 +29,39 @@ CREATE TABLE pdfs (
 CREATE TABLE waitlist (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email VARCHAR(255) UNIQUE NOT NULL,
+  preferred_tier TEXT DEFAULT 'pro' CHECK (preferred_tier IN ('pro', 'business')),
   source VARCHAR(50) DEFAULT 'landing',
   created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Upload logs table (for abuse tracking)
+CREATE TABLE upload_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  ip_address TEXT NOT NULL,
+  file_hash TEXT NOT NULL,
+  file_size BIGINT NOT NULL,
+  pdf_code TEXT,
+  success BOOLEAN NOT NULL,
+  error_message TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Blocked IPs table
+CREATE TABLE blocked_ips (
+  ip_address TEXT PRIMARY KEY,
+  reason TEXT NOT NULL,
+  blocked_at TIMESTAMPTZ DEFAULT NOW(),
+  expires_at TIMESTAMPTZ -- NULL = permanent
 );
 
 -- Indexes for performance
 CREATE INDEX idx_pdfs_short_code ON pdfs(short_code);
 CREATE INDEX idx_pdfs_expires_at ON pdfs(expires_at);
 CREATE INDEX idx_waitlist_email ON waitlist(email);
+CREATE INDEX idx_upload_logs_ip ON upload_logs(ip_address);
+CREATE INDEX idx_upload_logs_hash ON upload_logs(file_hash);
+CREATE INDEX idx_upload_logs_created ON upload_logs(created_at DESC);
+CREATE INDEX idx_blocked_ips_expires ON blocked_ips(expires_at);
 
 -- Function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at()
@@ -65,9 +90,11 @@ COMMENT ON COLUMN waitlist.source IS 'Where the user signed up from (landing, vi
 -- Row Level Security (RLS) Policies
 -- ============================================================================
 
--- Enable RLS on both tables
+-- Enable RLS on all tables
 ALTER TABLE pdfs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE waitlist ENABLE ROW LEVEL SECURITY;
+ALTER TABLE upload_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE blocked_ips ENABLE ROW LEVEL SECURITY;
 
 -- PDFs table policies
 -- Allow anyone to insert PDFs (uploads happen via API with validation)
@@ -109,6 +136,38 @@ CREATE POLICY "Restrict public read on waitlist"
   FOR SELECT
   USING (false);
 
+-- Upload logs table policies
+-- Allow API to insert upload logs (for abuse tracking)
+CREATE POLICY "API can insert upload logs"
+  ON upload_logs
+  FOR INSERT
+  WITH CHECK (true);
+
+-- Allow API to read upload logs (for duplicate detection)
+CREATE POLICY "API can read upload logs"
+  ON upload_logs
+  FOR SELECT
+  USING (true);
+
+-- Blocked IPs table policies
+-- Allow API to read blocked IPs (for access control)
+CREATE POLICY "API can read blocked IPs"
+  ON blocked_ips
+  FOR SELECT
+  USING (true);
+
+-- Allow API to insert/update blocked IPs (for admin operations)
+CREATE POLICY "API can insert blocked IPs"
+  ON blocked_ips
+  FOR INSERT
+  WITH CHECK (true);
+
+CREATE POLICY "API can update blocked IPs"
+  ON blocked_ips
+  FOR UPDATE
+  USING (true)
+  WITH CHECK (true);
+
 -- ============================================================================
 -- Security Notes
 -- ============================================================================
@@ -117,3 +176,4 @@ CREATE POLICY "Restrict public read on waitlist"
 -- 2. All database operations happen server-side via API routes
 -- 3. These policies provide defense in depth if anon key is ever used
 -- 4. For production, consider additional policies based on user auth
+-- 5. upload_logs and blocked_ips are accessible for abuse prevention

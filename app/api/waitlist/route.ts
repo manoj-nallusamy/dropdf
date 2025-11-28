@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, source = 'landing' } = await request.json();
+    const { email, preferredTier = 'pro', source = 'landing' } = await request.json();
 
     // Validate email
     if (!email || !email.includes('@')) {
@@ -13,11 +13,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate preferred tier
+    if (preferredTier && !['pro', 'business'].includes(preferredTier)) {
+      return NextResponse.json(
+        { error: 'Invalid tier selection' },
+        { status: 400 }
+      );
+    }
+
     // Insert into waitlist (upsert to handle duplicates)
     const { error } = await supabase
       .from('waitlist')
       .upsert(
-        { email: email.toLowerCase().trim(), source },
+        {
+          email: email.toLowerCase().trim(),
+          preferred_tier: preferredTier,
+          source
+        },
         { onConflict: 'email' }
       );
 

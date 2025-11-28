@@ -12,8 +12,10 @@ export default function TermsPage() {
       {/* Header */}
       <header className="py-6 px-4 border-b border-gray-100">
         <div className="max-w-4xl mx-auto">
-          <Link href="/" className="text-xl font-bold text-gray-900 hover:text-blue-500 transition-colors">
-            Drop<span className="text-blue-500">DF</span>
+          <Link href="/" className="text-xl font-bold group">
+            <span className="text-blue-600">D<span className="lowercase">ro</span></span>
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">P</span>
+            <span className="text-purple-600">DF</span>
           </Link>
         </div>
       </header>
@@ -21,14 +23,14 @@ export default function TermsPage() {
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">Terms of Service</h1>
-        <p className="text-gray-500 mb-8">Last updated: November 27, 2024</p>
+        <p className="text-gray-500 mb-8">Last updated: November 27, 2025</p>
 
         <div className="prose prose-gray max-w-none">
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Agreement to Terms</h2>
             <p className="text-gray-600 mb-4">
-              By accessing and using DropDF ("Service"), you agree to be bound by these Terms of Service
-              ("Terms"). If you disagree with any part of these terms, you may not use our Service.
+              By accessing and using DropDF (&quot;Service&quot;), you agree to be bound by these Terms of Service
+              (&quot;Terms&quot;). If you disagree with any part of these terms, you may not use our Service.
             </p>
           </section>
 
@@ -38,7 +40,8 @@ export default function TermsPage() {
               DropDF provides a free PDF sharing service that allows users to:
             </p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
-              <li>Upload PDF files up to 5MB</li>
+              <li>Upload up to 3 PDF files per week (free tier)</li>
+              <li>Upload PDF files up to 5MB each</li>
               <li>Generate shareable links for uploaded files</li>
               <li>Share PDFs without requiring an account</li>
               <li>View shared PDFs through our web interface</li>
@@ -52,7 +55,7 @@ export default function TermsPage() {
               <li>Upload illegal, harmful, or offensive content</li>
               <li>Share copyrighted materials without permission</li>
               <li>Distribute malware, viruses, or malicious code</li>
-              <li>Upload content that violates others' privacy</li>
+              <li>Upload content that violates others&apos; privacy</li>
               <li>Share sexually explicit or adult content</li>
               <li>Harass, threaten, or harm others</li>
               <li>Engage in spam or phishing activities</li>
@@ -64,11 +67,12 @@ export default function TermsPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">File Storage and Deletion</h2>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
-              <li>All uploaded files are automatically deleted after 24 hours</li>
+              <li>Free tier: uploaded files are automatically deleted after 7 days</li>
+              <li>Pro/Business tiers: files stored permanently (links never expire)</li>
               <li>We reserve the right to delete files earlier if they violate these Terms</li>
               <li>You should maintain your own backups of important files</li>
               <li>We are not responsible for any lost or deleted files</li>
-              <li>Links expire after 24 hours and cannot be recovered</li>
+              <li>Free tier links expire after 7 days and cannot be recovered</li>
             </ul>
           </section>
 
@@ -79,19 +83,19 @@ export default function TermsPage() {
               limited license to:
             </p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
-              <li>Store and display your PDFs for the duration of the link's validity</li>
+              <li>Store and display your PDFs for the duration of the link&apos;s validity</li>
               <li>Generate shareable links and previews</li>
               <li>Provide the service as described</li>
             </ul>
             <p className="text-gray-600 mt-4">
-              This license ends when your file is automatically deleted after 24 hours.
+              For free tier users, this license ends when your file is automatically deleted after 7 days.
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Disclaimer of Warranties</h2>
             <p className="text-gray-600 mb-4">
-              DropDF is provided "as is" without warranties of any kind. We do not guarantee:
+              DropDF is provided &quot;as is&quot; without warranties of any kind. We do not guarantee:
             </p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">
               <li>Uninterrupted or error-free service</li>
