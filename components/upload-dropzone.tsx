@@ -85,6 +85,7 @@ export function UploadDropzone() {
 
       // Reset CAPTCHA after successful upload
       setTurnstileToken(null);
+      sessionStorage.removeItem('turnstile_token');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
