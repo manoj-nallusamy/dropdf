@@ -12,6 +12,10 @@ export const metadata: Metadata = {
     template: `%s | ${CONSTANTS.APP_NAME}`,
   },
   description: 'Share PDF documents instantly with DropDF. Upload PDFs, get shareable links in seconds. No signup required. Free PDF sharing service with built-in viewer.',
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
   keywords: [
     'PDF sharing',
     'share PDF online',
@@ -51,6 +55,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
