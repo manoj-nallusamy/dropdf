@@ -12,6 +12,19 @@ export async function POST(request: NextRequest) {
   const isDevelopment = process.env.NODE_ENV === 'development';
   const skipRateLimits = process.env.SKIP_RATE_LIMITS === 'true';
 
+  // DEBUG: Log IP detection and rate limit config
+  console.log('[RATE LIMIT DEBUG]', {
+    ip,
+    isDevelopment,
+    skipRateLimits,
+    hasRedisUrl: !!process.env.UPSTASH_REDIS_URL,
+    hasRedisToken: !!process.env.UPSTASH_REDIS_TOKEN,
+    headers: {
+      'x-forwarded-for': request.headers.get('x-forwarded-for'),
+      'x-real-ip': request.headers.get('x-real-ip'),
+    },
+  });
+
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
@@ -56,14 +69,42 @@ export async function POST(request: NextRequest) {
 
     // 3. Rate limiting (3 uploads per week per IP) - skip if SKIP_RATE_LIMITS=true
     if (!skipRateLimits) {
-      const { success, limit, reset } = await uploadRateLimiter.limit(ip);
+      const rateLimitResult = await uploadRateLimiter.limit(ip);
 
-      if (!success) {
+      // DEBUG: Log rate limit result
+      console.log('[RATE LIMIT RESULT]', {
+        ip,
+        success: rateLimitResult.success,
+        limit: rateLimitResult.limit,
+        remaining: rateLimitResult.remaining,
+        reset: rateLimitResult.reset,
+        resetDate: new Date(rateLimitResult.reset).toISOString(),
+      });
+
+      if (!rateLimitResult.success) {
+        // Log rate limit failure to Supabase for analytics
+        try {
+          if (file) {
+            const buffer = Buffer.from(await file.arrayBuffer());
+            const fileHash = generateFileHash(buffer);
+            await logUpload(
+              ip,
+              fileHash,
+              file.size,
+              null,
+              false,
+              `Rate limit exceeded: ${rateLimitResult.limit} uploads per week`
+            );
+          }
+        } catch (logError) {
+          console.error('Failed to log rate limit error:', logError);
+        }
+
         return NextResponse.json(
           {
-            error: `Rate limit exceeded. Free tier allows ${limit} uploads per week.`,
+            error: `Rate limit exceeded. Free tier allows ${rateLimitResult.limit} uploads per week.`,
             remaining: 0,
-            resetAt: new Date(reset).toISOString(),
+            resetAt: new Date(rateLimitResult.reset).toISOString(),
           },
           { status: 429 }
         );
