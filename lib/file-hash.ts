@@ -33,7 +33,8 @@ export async function logUpload(
   fileSize: number,
   pdfCode: string | null,
   success: boolean,
-  errorMessage: string | null
+  errorMessage: string | null,
+  deviceId?: string | null
 ) {
   await supabase.from('upload_logs').insert({
     ip_address: ipAddress,
@@ -42,5 +43,6 @@ export async function logUpload(
     pdf_code: pdfCode,
     success,
     error_message: errorMessage,
+    device_id: deviceId || null,
   })
 }

@@ -20,9 +20,19 @@ export function UploadDropzone() {
   const [result, setResult] = useState<UploadResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [deviceId, setDeviceId] = useState<string>('');
 
-  // Load token from sessionStorage on mount
+  // Generate or load device ID and Turnstile token on mount
   useEffect(() => {
+    // Get or create device ID
+    let id = localStorage.getItem('dropdf_device_id');
+    if (!id) {
+      id = `dev_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+      localStorage.setItem('dropdf_device_id', id);
+    }
+    setDeviceId(id);
+
+    // Load Turnstile token from sessionStorage
     const savedToken = sessionStorage.getItem('turnstile_token');
     if (savedToken) {
       setTurnstileToken(savedToken);
@@ -56,6 +66,7 @@ export function UploadDropzone() {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('turnstileToken', turnstileToken);
+    formData.append('deviceId', deviceId);
 
     try {
       const res = await fetch('/api/upload', {
@@ -91,7 +102,7 @@ export function UploadDropzone() {
     } finally {
       setUploading(false);
     }
-  }, [turnstileToken]);
+  }, [turnstileToken, deviceId]);
 
   const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
     onDrop,

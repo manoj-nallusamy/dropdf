@@ -14,6 +14,14 @@ export const uploadRateLimiter = new Ratelimit({
   prefix: 'ratelimit:upload',
 })
 
+// 3 uploads per week per device ID
+export const deviceRateLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(3, '7 d'),
+  analytics: true,
+  prefix: 'ratelimit:device',
+})
+
 export function getClientIp(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for')
   const realIp = request.headers.get('x-real-ip')

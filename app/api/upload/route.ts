@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const turnstileToken = formData.get('turnstileToken') as string | null;
+    const deviceId = formData.get('deviceId') as string | null;
 
     // === ABUSE PROTECTION CHECKS ===
 
@@ -67,33 +68,51 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 3. Rate limiting (3 uploads per week per IP) - skip if SKIP_RATE_LIMITS=true
+    // 3. Rate limiting (3 uploads per week per IP AND per device) - skip if SKIP_RATE_LIMITS=true
     if (!skipRateLimits) {
-      const rateLimitResult = await uploadRateLimiter.limit(ip);
+      // Check IP rate limit
+      const ipRateLimit = await uploadRateLimiter.limit(ip);
 
-      // DEBUG: Log rate limit result
+      // Check device rate limit (if device ID provided)
+      let deviceRateLimit = null;
+      if (deviceId) {
+        const { deviceRateLimiter } = await import('@/lib/rate-limit');
+        deviceRateLimit = await deviceRateLimiter.limit(deviceId);
+      }
+
+      // DEBUG: Log rate limit results
       console.log('[RATE LIMIT RESULT]', {
         ip,
-        success: rateLimitResult.success,
-        limit: rateLimitResult.limit,
-        remaining: rateLimitResult.remaining,
-        reset: rateLimitResult.reset,
-        resetDate: new Date(rateLimitResult.reset).toISOString(),
+        deviceId,
+        ipLimit: {
+          success: ipRateLimit.success,
+          remaining: ipRateLimit.remaining,
+        },
+        deviceLimit: deviceRateLimit ? {
+          success: deviceRateLimit.success,
+          remaining: deviceRateLimit.remaining,
+        } : null,
       });
 
-      if (!rateLimitResult.success) {
+      // Block if EITHER IP or device limit is exceeded
+      const ipBlocked = !ipRateLimit.success;
+      const deviceBlocked = deviceRateLimit && !deviceRateLimit.success;
+
+      if (ipBlocked || deviceBlocked) {
         // Log rate limit failure to Supabase for analytics
         try {
           if (file) {
             const buffer = Buffer.from(await file.arrayBuffer());
             const fileHash = generateFileHash(buffer);
+            const reason = ipBlocked ? 'IP rate limit exceeded' : 'Device rate limit exceeded';
             await logUpload(
               ip,
               fileHash,
               file.size,
               null,
               false,
-              `Rate limit exceeded: ${rateLimitResult.limit} uploads per week`
+              `${reason}: 3 uploads per week`,
+              deviceId
             );
           }
         } catch (logError) {
@@ -102,9 +121,9 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json(
           {
-            error: `Rate limit exceeded. Free tier allows ${rateLimitResult.limit} uploads per week.`,
+            error: `Rate limit exceeded. Free tier allows 3 uploads per week.`,
             remaining: 0,
-            resetAt: new Date(rateLimitResult.reset).toISOString(),
+            resetAt: new Date((ipBlocked ? ipRateLimit : deviceRateLimit!).reset).toISOString(),
           },
           { status: 429 }
         );
@@ -145,7 +164,7 @@ export async function POST(request: NextRequest) {
     if (!skipRateLimits) {
       const isDuplicate = await checkDuplicateUpload(ip, fileHash);
       if (isDuplicate) {
-        await logUpload(ip, fileHash, file.size, null, false, 'Duplicate upload (3+ times in 24h)');
+        await logUpload(ip, fileHash, file.size, null, false, 'Duplicate upload (3+ times in 24h)', deviceId);
         return NextResponse.json(
           { error: 'You have uploaded this file too many times. Please try again in 24 hours.' },
           { status: 429 }
@@ -175,7 +194,7 @@ export async function POST(request: NextRequest) {
 
     if (dbError) {
       console.error('Database error:', dbError);
-      await logUpload(ip, fileHash, file.size, null, false, dbError.message);
+      await logUpload(ip, fileHash, file.size, null, false, dbError.message, deviceId);
       return NextResponse.json(
         { error: 'Failed to save file metadata' },
         { status: 500 }
@@ -183,7 +202,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Log successful upload
-    await logUpload(ip, fileHash, file.size, shortCode, true, null);
+    await logUpload(ip, fileHash, file.size, shortCode, true, null, deviceId);
 
     // Return success with link
     const url = `${CONSTANTS.APP_URL}/${shortCode}`;
@@ -204,11 +223,12 @@ export async function POST(request: NextRequest) {
     try {
       const formData = await request.formData();
       const file = formData.get('file') as File | null;
+      const deviceId = formData.get('deviceId') as string | null;
       if (file) {
         const buffer = Buffer.from(await file.arrayBuffer());
         const fileHash = generateFileHash(buffer);
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        await logUpload(ip, fileHash, file.size, null, false, errorMessage);
+        await logUpload(ip, fileHash, file.size, null, false, errorMessage, deviceId);
       }
     } catch {
       // Ignore logging errors
