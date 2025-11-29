@@ -616,6 +616,67 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section className="relative py-12 px-4 bg-white">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-base sm:text-lg text-gray-600">
+              Everything you need to know about DropDF
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">
+                How long do PDF links stay active?
+              </h3>
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                Free tier links remain active for 7 days. After that, files are automatically deleted for your privacy. Pro and Business plans offer links that never expire.
+              </p>
+            </div>
+
+            <div className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">
+                Can I password protect my PDF?
+              </h3>
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                Password protection is available on Pro and Business plans. You can secure your PDFs with password access control to ensure only authorized recipients can view them.
+              </p>
+            </div>
+
+            <div className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">
+                What happens to my PDF after I upload it?
+              </h3>
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                Your PDF is stored securely in cloud storage. Only people with the exact link can access it. Free tier files are automatically deleted after 7 days for your privacy.
+              </p>
+            </div>
+
+            <div className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">
+                Can I track who views my PDF?
+              </h3>
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                Yes! View tracking and analytics are available on Pro and Business plans. You'll be able to see when and how many times your PDF was opened, along with detailed engagement metrics on Business plans.
+              </p>
+            </div>
+
+            <div className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">
+                Is there a file size limit?
+              </h3>
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                Yes. Free tier supports files up to 5MB. Pro plan allows up to 50MB per file, and Business plan supports up to 100MB per file.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="relative py-12 px-4 bg-gradient-to-b from-white to-gray-50 border-t border-gray-100">
         <div className="max-w-6xl mx-auto">

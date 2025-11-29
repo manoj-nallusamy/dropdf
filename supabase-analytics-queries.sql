@@ -113,14 +113,12 @@ ORDER BY
   END;
 
 
--- Query 6: Users hitting rate limits (upgrade candidates)
--- Use this for: Identifying power users who need Pro tier
+-- Query 6: Users hitting rate limits
+-- Use this for: Identifying upgrade candidates
 SELECT
   ip_address,
-  COUNT(*) as total_attempts,
-  SUM(CASE WHEN success THEN 1 ELSE 0 END) as successful_uploads,
-  SUM(CASE WHEN error_message LIKE 'Rate limit exceeded%' THEN 1 ELSE 0 END) as rate_limit_blocks,
-  MAX(created_at) as last_attempt,
+  COUNT(*) as upload_count,
+  MAX(created_at) as last_upload,
   CASE
     WHEN COUNT(*) >= 3 THEN 'At or above free tier limit'
     ELSE 'Below limit'
@@ -129,23 +127,7 @@ FROM upload_logs
 WHERE created_at >= NOW() - INTERVAL '7 days'
 GROUP BY ip_address
 HAVING COUNT(*) >= 3
-ORDER BY rate_limit_blocks DESC, total_attempts DESC;
-
-
--- Query 6B: Rate limit violations only (blocked users)
--- Use this for: Understanding rate limit effectiveness and conversion opportunities
-SELECT
-  ip_address,
-  COUNT(*) as rate_limit_blocks,
-  MAX(created_at) as last_blocked_at,
-  MIN(created_at) as first_blocked_at,
-  EXTRACT(EPOCH FROM (MAX(created_at) - MIN(created_at))) / 3600 as hours_between_blocks
-FROM upload_logs
-WHERE error_message LIKE 'Rate limit exceeded%'
-AND created_at >= NOW() - INTERVAL '30 days'
-GROUP BY ip_address
-ORDER BY rate_limit_blocks DESC
-LIMIT 50;
+ORDER BY upload_count DESC;
 
 
 -- SECTION 4: FILE & STORAGE METRICS

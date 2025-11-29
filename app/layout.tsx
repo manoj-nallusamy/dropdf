@@ -3,18 +3,23 @@ import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import { CONSTANTS } from '@/lib/constants';
+import { WebApplicationSchema, OrganizationSchema, FAQSchema } from './components/json-ld-schema';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(CONSTANTS.APP_URL),
   title: {
-    default: `${CONSTANTS.APP_NAME} - Share PDF Files Instantly | Free PDF Sharing`,
+    default: 'Share PDF Online Free - DropDF | Instant PDF Sharing & Hosting',
     template: `%s | ${CONSTANTS.APP_NAME}`,
   },
-  description: 'Share PDF documents instantly with DropDF. Upload PDFs, get shareable links in seconds. No signup required. Free PDF sharing service with built-in viewer.',
+  description: 'Upload PDFs and get shareable links instantly. No signup required. Free PDF hosting with built-in viewer. Try DropDF now - share PDFs in 3 clicks!',
   icons: {
     icon: '/icon.png',
     apple: '/apple-icon.png',
+  },
+  alternates: {
+    canonical: '/',
   },
   keywords: [
     'PDF sharing',
@@ -32,7 +37,7 @@ export const metadata: Metadata = {
   creator: 'DropDF',
   publisher: 'DropDF',
   openGraph: {
-    title: `${CONSTANTS.APP_NAME} - Share PDF Files Instantly`,
+    title: 'Share PDF Online Free - DropDF | Instant PDF Sharing & Hosting',
     description: 'Upload PDFs and get shareable links in seconds. No signup required. Free, fast, and simple PDF sharing service.',
     url: CONSTANTS.APP_URL,
     siteName: CONSTANTS.APP_NAME,
@@ -41,7 +46,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${CONSTANTS.APP_NAME} - Share PDF Files Instantly`,
+    title: 'Share PDF Online Free - DropDF | Instant PDF Sharing & Hosting',
     description: 'Free PDF sharing service. Upload PDFs, get instant shareable links. No signup required.',
   },
   robots: {
@@ -65,6 +70,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <WebApplicationSchema />
+        <OrganizationSchema />
+        <FAQSchema />
+      </head>
       <body className={`${inter.className} antialiased bg-white text-gray-900`} suppressHydrationWarning>
         {children}
         <Analytics />
