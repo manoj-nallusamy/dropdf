@@ -50,8 +50,11 @@ export default function TermsPage() {
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Payment Processing</h2>
+            <p className="text-gray-600 mb-4">
+              Payments are processed by Dodo Payments, who acts as the Merchant of Record for all transactions. Dodo Payments handles billing, tax compliance, and payment disputes.
+            </p>
             <p className="text-gray-600">
-              Our order process is conducted by our online reseller Paddle.com. Paddle.com is the Merchant of Record for all our orders. Paddle provides all customer service inquiries and handles returns.
+              For payment-related inquiries, billing questions, or refund requests, you may contact Dodo Payments support or reach out to us at support@dropdf.com.
             </p>
           </section>
 

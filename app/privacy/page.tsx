@@ -100,7 +100,7 @@ export default function PrivacyPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Payment Processing</h2>
             <p className="text-gray-600 mb-4">
-              When you purchase a paid plan (Pro or Business), payment processing is handled by our Merchant of Record, Paddle.com. Paddle collects and processes payment information on our behalf. Please refer to Paddle&apos;s privacy policy for details on how they handle your payment data.
+              When you purchase a paid plan (Pro or Business), payment processing is handled by our Merchant of Record, Dodo Payments. Dodo Payments collects and processes payment information on our behalf, including billing details and tax compliance. Please refer to Dodo Payments&apos; privacy policy for details on how they handle your payment data.
             </p>
           </section>
 

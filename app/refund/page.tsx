@@ -76,10 +76,10 @@ export default function RefundPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Merchant of Record</h2>
             <p className="text-gray-600 mb-4">
-              Our order process is conducted by our online reseller Paddle.com. Paddle.com is the Merchant of Record for all our orders. Paddle provides all customer service inquiries and handles returns.
+              Payments are processed by Dodo Payments, who acts as the Merchant of Record for all transactions. Dodo Payments handles billing, payment disputes, and refund processing.
             </p>
             <p className="text-gray-600">
-              For payment-related questions or issues with processing your refund, you may also contact Paddle directly through their support channels.
+              For payment-related questions or issues with processing your refund, you may contact Dodo Payments support or reach out to us directly at support@dropdf.com.
             </p>
           </section>
 
