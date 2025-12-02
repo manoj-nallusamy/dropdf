@@ -3,7 +3,18 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Refund Policy - DropDF',
-  description: 'Learn about DropDF refund policy and money-back guarantee.',
+  description: 'Learn about DropDF refund policy and money-back guarantee. 7-day money-back guarantee on all paid plans. Easy refund process.',
+  openGraph: {
+    title: 'Refund Policy - DropDF',
+    description: '7-day money-back guarantee on all paid plans. Easy refund process.',
+    url: 'https://dropdf.com/refund',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Refund Policy - DropDF',
+    description: '7-day money-back guarantee on all paid plans. Easy refund process.',
+  },
 };
 
 export default function RefundPage() {

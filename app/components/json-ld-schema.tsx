@@ -32,6 +32,20 @@ export function OrganizationSchema() {
     "name": "DropDF",
     "url": "https://dropdf.com",
     "logo": "https://dropdf.com/icon-512.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@dropdf.com",
+      "contactType": "customer support"
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Manoj"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bengaluru",
+      "addressCountry": "IN"
+    },
     "sameAs": []
   };
 

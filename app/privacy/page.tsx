@@ -3,7 +3,18 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy - DropDF',
-  description: 'Learn how DropDF protects your privacy and handles your PDF documents.',
+  description: 'Learn how DropDF protects your privacy and handles your PDF documents. We take your privacy seriously and explain our data collection and security practices.',
+  openGraph: {
+    title: 'Privacy Policy - DropDF',
+    description: 'Learn how DropDF protects your privacy and handles your PDF documents securely.',
+    url: 'https://dropdf.com/privacy',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Privacy Policy - DropDF',
+    description: 'Learn how DropDF protects your privacy and handles your PDF documents securely.',
+  },
 };
 
 export default function PrivacyPage() {

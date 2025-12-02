@@ -2,8 +2,19 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About DropDF - Contact Us',
-  description: 'Learn about DropDF and get in touch with us.',
+  title: 'About - DropDF',
+  description: 'Built by Manoj — a software engineer from India making PDF sharing stupidly simple. Say hi on LinkedIn, Twitter, or email.',
+  openGraph: {
+    title: 'About - DropDF',
+    description: 'Built by Manoj — a software engineer from India making PDF sharing stupidly simple.',
+    url: 'https://dropdf.com/about',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'About - DropDF',
+    description: 'Built by Manoj — a software engineer from India making PDF sharing stupidly simple.',
+  },
 };
 
 export default function AboutPage() {
@@ -45,9 +56,31 @@ export default function AboutPage() {
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">About the Founder</h2>
-            <p className="text-gray-600 mb-4">
-              DropDF is created by Manoj, a developer based in Bengaluru, India. The service was born out of a personal need for a simpler way to share PDF documents without the limitations of traditional file-sharing methods.
-            </p>
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-8">
+              <p className="text-xl text-gray-700 leading-relaxed mb-4">
+                Built by <a href="https://in.linkedin.com/in/manojnallusamy" target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-600 hover:text-blue-700 underline decoration-2 underline-offset-2">Manoj</a> — a software engineer from India making PDF sharing stupidly simple.
+              </p>
+              <div className="pt-4 border-t border-blue-200">
+                <p className="text-gray-600 mb-3">Say hi:</p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <a
+                    href="https://in.linkedin.com/in/manojnallusamy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-700 font-medium underline decoration-2 underline-offset-2"
+                  >
+                    LinkedIn
+                  </a>
+                  <span className="text-gray-400">·</span>
+                  <a
+                    href="mailto:hello@dropdf.com"
+                    className="text-blue-600 hover:text-blue-700 font-medium underline decoration-2 underline-offset-2"
+                  >
+                    hello@dropdf.com
+                  </a>
+                </div>
+              </div>
+            </div>
           </section>
 
           <section className="mb-8">

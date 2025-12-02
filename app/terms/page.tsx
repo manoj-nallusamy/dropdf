@@ -3,7 +3,18 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Terms of Service - DropDF',
-  description: 'Read the terms and conditions for using DropDF PDF sharing service.',
+  description: 'Read the terms and conditions for using DropDF PDF sharing service. Understand your rights, acceptable use, and our service policies.',
+  openGraph: {
+    title: 'Terms of Service - DropDF',
+    description: 'Read the terms and conditions for using DropDF PDF sharing service.',
+    url: 'https://dropdf.com/terms',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Terms of Service - DropDF',
+    description: 'Read the terms and conditions for using DropDF PDF sharing service.',
+  },
 };
 
 export default function TermsPage() {
