@@ -711,9 +711,14 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-gray-100 text-center">
+          <div className="mt-8 pt-8 border-t border-gray-100 text-center space-y-2">
             <p className="text-gray-500 text-sm">
               © 2025 DropDF. Built with ❤️ for easy PDF sharing.
+            </p>
+            <p className="text-gray-400 text-xs">
+              <a href="https://www.flaticon.com/free-icons/share" title="share icons" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">
+                Icons created by Freepik - Flaticon
+              </a>
             </p>
           </div>
         </div>
