@@ -561,7 +561,7 @@ export default function HomePage() {
           </div>
 
           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 leading-tight">
-            Join 1,000+ Companies<br />on the Waitlist
+            Join the Waitlist for<br />Early Access
           </h2>
 
           <p className="text-base sm:text-xl text-blue-100 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -695,11 +695,17 @@ export default function HomePage() {
 
             <div className="flex flex-col sm:flex-row items-center gap-8">
               <div className="flex gap-6">
+                <Link href="/about" className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors">
+                  About
+                </Link>
                 <Link href="/privacy" className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors">
                   Privacy
                 </Link>
                 <Link href="/terms" className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors">
                   Terms
+                </Link>
+                <Link href="/refund" className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors">
+                  Refund
                 </Link>
               </div>
             </div>

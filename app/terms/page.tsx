@@ -49,6 +49,13 @@ export default function TermsPage() {
           </section>
 
           <section className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Payment Processing</h2>
+            <p className="text-gray-600">
+              Our order process is conducted by our online reseller Paddle.com. Paddle.com is the Merchant of Record for all our orders. Paddle provides all customer service inquiries and handles returns.
+            </p>
+          </section>
+
+          <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Acceptable Use</h2>
             <p className="text-gray-600 mb-4">You agree NOT to use DropDF to:</p>
             <ul className="list-disc pl-6 text-gray-600 space-y-2">

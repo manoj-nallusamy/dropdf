@@ -29,24 +29,42 @@ export function UploadDropzone() {
     if (!id) {
       id = `dev_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
       localStorage.setItem('dropdf_device_id', id);
+      console.log('[CAPTCHA CLIENT] Device ID created', { deviceId: id });
+    } else {
+      console.log('[CAPTCHA CLIENT] Device ID loaded', { deviceId: id });
     }
     setDeviceId(id);
 
     // Load Turnstile token from sessionStorage
     const savedToken = sessionStorage.getItem('turnstile_token');
     if (savedToken) {
+      console.log('[CAPTCHA CLIENT] Token loaded from sessionStorage', {
+        tokenPrefix: savedToken.substring(0, 20) + '...',
+        tokenLength: savedToken.length,
+        timestamp: new Date().toISOString(),
+      });
       setTurnstileToken(savedToken);
+    } else {
+      console.log('[CAPTCHA CLIENT] No saved token found');
     }
   }, []);
 
   // Save token to sessionStorage when verification succeeds
   const handleTurnstileSuccess = useCallback((token: string) => {
+    console.log('[CAPTCHA CLIENT] Turnstile verification successful', {
+      tokenPrefix: token.substring(0, 20) + '...',
+      tokenLength: token.length,
+      timestamp: new Date().toISOString(),
+    });
     setTurnstileToken(token);
     sessionStorage.setItem('turnstile_token', token);
   }, []);
 
   // Clear token from sessionStorage on expiry
   const handleTurnstileExpire = useCallback(() => {
+    console.warn('[CAPTCHA CLIENT] Token expired', {
+      timestamp: new Date().toISOString(),
+    });
     setTurnstileToken(null);
     sessionStorage.removeItem('turnstile_token');
   }, []);
@@ -55,7 +73,18 @@ export function UploadDropzone() {
     const file = acceptedFiles[0];
     if (!file) return;
 
+    console.log('[CAPTCHA CLIENT] Upload started', {
+      hasToken: !!turnstileToken,
+      tokenLength: turnstileToken?.length,
+      fileName: file.name,
+      fileSize: file.size,
+      timestamp: new Date().toISOString(),
+    });
+
     if (!turnstileToken) {
+      console.error('[CAPTCHA CLIENT] Upload blocked - no token', {
+        timestamp: new Date().toISOString(),
+      });
       setError('Please complete the CAPTCHA verification');
       return;
     }
@@ -79,6 +108,11 @@ export function UploadDropzone() {
       if (!res.ok) {
         // If CAPTCHA verification failed, clear the token
         if (data.error?.includes('CAPTCHA')) {
+          console.error('[CAPTCHA CLIENT] Server rejected token', {
+            error: data.error,
+            status: res.status,
+            timestamp: new Date().toISOString(),
+          });
           setTurnstileToken(null);
           sessionStorage.removeItem('turnstile_token');
         }
@@ -100,9 +134,16 @@ export function UploadDropzone() {
       window.dispatchEvent(new CustomEvent('upload-saved'));
 
       // Reset CAPTCHA after successful upload
+      console.log('[CAPTCHA CLIENT] Upload successful, clearing token', {
+        timestamp: new Date().toISOString(),
+      });
       setTurnstileToken(null);
       sessionStorage.removeItem('turnstile_token');
     } catch (err) {
+      console.error('[CAPTCHA CLIENT] Upload failed', {
+        error: err instanceof Error ? err.message : String(err),
+        timestamp: new Date().toISOString(),
+      });
       setError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
       setUploading(false);
@@ -219,7 +260,10 @@ export function UploadDropzone() {
             siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
             onSuccess={handleTurnstileSuccess}
             onError={(err) => {
-              console.error('Turnstile error:', err);
+              console.error('[CAPTCHA CLIENT] Turnstile widget error', {
+                error: err,
+                timestamp: new Date().toISOString(),
+              });
               setError('CAPTCHA verification failed. Please try again.');
               sessionStorage.removeItem('turnstile_token');
             }}

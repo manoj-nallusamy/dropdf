@@ -52,20 +52,50 @@ export async function POST(request: NextRequest) {
 
     // 2. CAPTCHA verification (skip in dev mode)
     if (!isDevelopment) {
+      console.log('[UPLOAD CAPTCHA] Starting verification', {
+        hasToken: !!turnstileToken,
+        tokenLength: turnstileToken?.length,
+        ip,
+        deviceId,
+        timestamp: new Date().toISOString(),
+      });
+
       if (turnstileToken) {
         const isValid = await verifyTurnstile(turnstileToken, ip);
         if (!isValid) {
+          console.error('[UPLOAD CAPTCHA] Verification failed', {
+            ip,
+            deviceId,
+            tokenPrefix: turnstileToken.substring(0, 20) + '...',
+            timestamp: new Date().toISOString(),
+          });
           return NextResponse.json(
             { error: 'CAPTCHA verification failed. Please try again.' },
             { status: 403 }
           );
         }
+        console.log('[UPLOAD CAPTCHA] Verification passed', {
+          ip,
+          deviceId,
+          timestamp: new Date().toISOString(),
+        });
       } else {
+        console.error('[UPLOAD CAPTCHA] No token provided', {
+          ip,
+          deviceId,
+          timestamp: new Date().toISOString(),
+        });
         return NextResponse.json(
           { error: 'CAPTCHA required' },
           { status: 400 }
         );
       }
+    } else {
+      console.log('[UPLOAD CAPTCHA] Skipped (development mode)', {
+        hasToken: !!turnstileToken,
+        ip,
+        deviceId,
+      });
     }
 
     // 3. Rate limiting (3 uploads per week per IP AND per device) - skip if SKIP_RATE_LIMITS=true
